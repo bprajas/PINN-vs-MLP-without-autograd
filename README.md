@@ -6,7 +6,7 @@ Numpy,
 Matplotlib.
 
 # Features
-4 Layer Feedforward Neural Network,
+4 Layer MLP,
 Manual Backpropagation,
 Purely Numpy Based,
 PINN integrated.
