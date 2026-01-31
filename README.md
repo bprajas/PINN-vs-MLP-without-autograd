@@ -1,4 +1,4 @@
-# Physics-Informed-Neural-Network-No-Autograd-
+# Physics-Informed-Neural-Network:No-Autograd
 Learning attempt, fitting sinx over a larger set of x using a PINN.
 
 # Requirements
