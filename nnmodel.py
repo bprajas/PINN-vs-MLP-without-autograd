@@ -1,9 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-x = np.linspace(-10,10,50)
-y = np.sin(x)
-
 w = [0.5, -1.2, 0.3]
 b = [0.0, 0.2, -0.1]
 w1 = [[0.2, -0.5, 0.3],
@@ -30,7 +27,7 @@ def forward(x, w, b, w1, b1, w2, b2, w3, b3, w4, b4):
     for j in range(len(w1)):
         store=0
         for k in range(len(layerdata1)):
-            store+=layerdata1[k]*w1[j][k]
+            store+=w1[j][k]*layerdata1[k]
         store+=b1[j]
         layerdata2.append(np.tanh(store))
 
@@ -38,9 +35,10 @@ def forward(x, w, b, w1, b1, w2, b2, w3, b3, w4, b4):
     for l in range(len(w2)):
         store=0
         for m in range(len(layerdata2)):
-            store+=layerdata2[m]*w2[l][m]
+            store+=w2[l][m]*layerdata2[m]
         store+=b2[l]
         layerdata3.append(np.tanh(store))
+
     layerdata4=[]
     for n in range(len(w3)):
         store=0
@@ -55,22 +53,10 @@ def forward(x, w, b, w1, b1, w2, b2, w3, b3, w4, b4):
     output+=b4
     return output,layerdata1,layerdata2,layerdata3,layerdata4
 
-def train(x, y, w, b, w1, b1, w2, b2, w3, b3, w4, b4, lr=0.01, epochs=1000):
-    for _ in range(epochs):
+def train(x, y, w, b, w1, b1, w2, b2, w3, b3, w4, b4, lr=0.01):
         output, laydat1, laydat2, laydat3, laydat4 = forward(x, w, b, w1, b1, w2, b2, w3, b3, w4, b4)
-        dydx=0
-        for i in range(len(w)):
-            dydx+=w[i]*(1-laydat1[i]**2)
-
-        residual=dydx+output-(np.sin(x)+np.cos(x))
-        dLphysdy=2*residual
-        Loss=(residual**2)+0.5*(output-y)**2
-        dLdatady=output-y
-        lamphys=0.8
-        lamdat=1-lamphys
-
-        dLout=lamdat*dLdatady+lamphys*dLphysdy
-
+        Loss=0.5*(output-y)**2
+        dLout=output-y
         dLlaydat4=[dLout*w4[p]*(1-laydat4[p]**2) for p in range(len(w4))]
 
         dLlaydat3=[]
@@ -95,41 +81,26 @@ def train(x, y, w, b, w1, b1, w2, b2, w3, b3, w4, b4, lr=0.01, epochs=1000):
             dLlaydat1.append(s*(1-laydat1[o]**2))
 
         for i in range(len(w)):
-            w[i]-=lr*dLlaydat1[i]*x
-            b[i]-=lr*dLlaydat1[i]
+            w[i]-=np.mean(lr*dLlaydat1[i]*x)
+            b[i]-=np.mean(lr*dLlaydat1[i])
 
         for i in range(len(w1)):
             for j in range(len(w1[0])):
-                w1[i][j]-=lr*dLlaydat2[i]*laydat1[j]
-            b1[i]-=lr*dLlaydat2[i]
+                w1[i][j]-=np.mean(lr*dLlaydat2[i]*laydat1[j])
+            b1[i]-=np.mean(lr*dLlaydat2[i])
 
         for i in range(len(w2)):
             for j in range(len(w2[0])):
-                w2[i][j]-=lr*dLlaydat3[i]*laydat2[j]
-            b2[i]-=lr*dLlaydat3[i]
+                w2[i][j]-=np.mean(lr*dLlaydat3[i]*laydat2[j])
+            b2[i]-=np.mean(lr*dLlaydat3[i])
 
         for i in range(len(w3)):
             for j in range(len(w3[0])):
-                w3[i][j]-=lr*dLlaydat4[i]*laydat3[j]
-            b3[i]-=lr*dLlaydat4[i]
+                w3[i][j]-=np.mean(lr*dLlaydat4[i]*laydat3[j])
+            b3[i]-=np.mean(lr*dLlaydat4[i])
 
         for i in range(len(w4)):
-            w4[i]-=lr*dLout*laydat4[i]
-        b4-=lr*dLout
+            w4[i]-=np.mean(lr*dLout*laydat4[i])
+        b4-=np.mean(lr*dLout)
 
-    return w, b, w1, b1, w2, b2, w3, b3, w4, b4, Loss
-
-for m in range(1000):
-    for xi, yi in zip(x, y):
-        w, b, w1, b1, w2, b2, w3, b3, w4, b4, Loss = train(xi, yi,w, b, w1, b1, w2, b2, w3, b3, w4, b4)
-
-
-ypred = []
-xvaluesforplot = np.linspace(-10,10,20)
-
-for xnew in xvaluesforplot:
-    ypred.append(float(forward(xnew, w, b, w1, b1, w2, b2, w3, b3, w4, b4)[0]))
-
-plt.scatter(xvaluesforplot, ypred, color='red')
-plt.plot(x,y)
-plt.show()
+        return w, b, w1, b1, w2, b2, w3, b3, w4, b4, Loss
