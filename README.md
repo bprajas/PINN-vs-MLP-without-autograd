@@ -18,4 +18,4 @@ Model 1 is an MLP with tanh as the activation function on all layers execpt last
 ## Model 2:
 Model 2 follows the same skeleton as Model 1. The loss is described by the following equation, L = (1 - lambda) * MSELOSS + lambda * PHYSICSLOSS, where MSELOSS is the mean squared error between y and yhat, lambda is the coefficient that controls the relative importance of MSELOSS and PHYSICSLOSS and PHYSICSLOSS is the physics loss described by the following residual, d^2y/dy^2 + y = 0.
 
-###Note: This experiment is an exploration for learning, and is not built to be efficient.
+### Note: This experiment is an exploration for learning, and is not built to be efficient.
