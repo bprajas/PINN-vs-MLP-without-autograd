@@ -1,4 +1,4 @@
-# Physics-Informed-Neural-Network vs MLP: No Autograd
+# PINN vs MLP: No Autograd
 Comparing a PINN on small dataset, a NN on large dataset and small dataset.
 
 # Requirements
