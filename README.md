@@ -1,29 +1,21 @@
-# Physics-Informed-Neural-Network:No-Autograd
-Learning attempt, fitting sinx over a larger set of x using a PINN.
+# Physics-Informed-Neural-Network vs MLP: No Autograd
+Comparing a PINN on small dataset, a NN on large dataset and small dataset.
 
 # Requirements
 Numpy,
 Matplotlib.
 
 # Features
-4 Layer MLP,
+MLP: 1-tanh-3-tanh-3-tanh-3-tanh-1-tanh-out-mse,
+PINN: 1-tanh-3-tanh-3-tanh-3-tanh-1-tanh-out-mse+physicsloss,
 Manual Backpropagation,
-Purely Numpy Based,
-PINN integrated.
+Numpy Based.
 
-# Model
-The Network is initialised with manual weights and biases. Every layer uses the tanh function as the activation: a = tanh(wx+b)
+# Models
+## Model 1:
+Model 1 is an MLP with tanh as the activation function on all layers execpt last year. It's the number of neurons on every layer of the network is as follows, 1-3-3-3-1-1. Followed by Mean Squared Error used to evaluate the loss.
 
-The Physics Informed Residual is dy/dx + y - (sinx + cosx). The Residual's differential equation form's solution is y = sinx for y(0) = 0, fitting for the function sinx.
+## Model 2:
+Model 2 follows the same skeleton as Model 1. The loss is described by the following equation, L = (1 - lambda) * MSELOSS + lambda * PHYSICSLOSS, where MSELOSS is the mean squared error between y and yhat, lambda is the coefficient that controls the relative importance of MSELOSS and PHYSICSLOSS and PHYSICSLOSS is the physics loss described by the following residual, d^2y/dy^2 + y = 0.
 
-The total loss is L = 0.5*((output-y)**2 + (dy/dx + y - (sinx + cosx))**2).
-
-The backpropagation is a sort of SGD where every data point of the dataset, one by one, is used to train the Neural Network.
-
-The training loop is as follows:
-Forward pass,
-Loss Calculation,
-Back Propagation,
-Update.
-
-This model is an educational exploration, and is not built to be efficient.
+This experiment is an exploration for learning, and is not built to be efficient.
